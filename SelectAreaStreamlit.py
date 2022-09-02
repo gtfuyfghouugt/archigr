@@ -12,19 +12,29 @@ import folium as folium
 st.title('Boat Analysis (2020)')
 
 @st.cache
-def load_data():
-    df=pd.DataFrame()
-    df=pd.read_csv("MarineTraffic_2020.csv")
-    df.TIMESTAMP = pd.to_datetime(df.TIMESTAMP, format='%Y-%m-%d %H:%M:%S')  
-    return df
-df=load_data()
-
-@st.cache
 def load_data_type():        
     df_type=pd.DataFrame()
     df_type=pd.read_csv('SHIPTYPES.csv')
     return df_type 
 df_type=load_data_type()
+
+@st.cache
+def load_data(df_type):
+    df=pd.DataFrame()
+    df=pd.read_csv("MarineTraffic_2020.csv")
+    df_final=pd.DataFrame()
+    for i in df_type['TYPE'].value_counts().index:
+        type=np.array([])
+        type=np.append(type,df_type.loc[df_type['TYPE'] == i, 'NUMBER'])
+        df_boat=pd.DataFrame()
+        for a in type:
+            df_boat= pd.concat([df_boat, df[df['TYPE_GROUPED_ID']==a]])
+        df_boat=df_boat.assign(TYPE = i )
+        df_final=pd.concat([df_final,df_boat])
+    df=pd.DataFrame(df_final)
+    df.TIMESTAMP = pd.to_datetime(df.TIMESTAMP, format='%Y-%m-%d %H:%M:%S')  
+    return df
+df=load_data(df_type)
 
 @st.cache
 def load_data_foc():        
