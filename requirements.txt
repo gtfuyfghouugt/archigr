@@ -1,0 +1,11 @@
+geopandas
+keplergl
+pandas
+numpy
+datetime
+folium
+leafmap 
+streamlit
+matplotlib
+git+https://github.com/giswqs/leafmap
+git+https://github.com/giswqs/geemap
